@@ -148,10 +148,15 @@ public final class Constants {
     public static final double linearkI = 0.001;
     public static final double linearkD = 0.05;
 
-    public static final double limelightAngle = 30;
-    public static final double limelightDistanceForward = 10.5; //inches
-    public static final double limelightDistanceRight = 2.5; //inches
-    public static final double limelightHeight = 10.5; //inches
+    public static final double Angle_Coral = -15;
+    public static final double DistanceForward_Coral = 5; //inches
+    public static final double DistanceRight_Coral = -3; //inches
+    public static final double Height_Coral = 23.75; //inches
+
+    public static final double Angle_Tags = 15;
+    public static final double DistanceForward_Tags = 3; //inches
+    public static final double DistanceRight_Tags = -3; //inches
+    public static final double Height_Tags = 24.5; //inches
   }
 
 
@@ -161,12 +166,12 @@ public final class Constants {
     public static final double kMaxAngularSpeedRadiansPerSecond =  constants_Drive.kTeleDriveMaxAngularSpeedRadiansPerSecond;
     public static final double kMaxAngularAccelerationUnitsPerSecond = constants_Drive.kTeleDriveMaxAngularAccelerationUnitsPerSecond;
 
-    public static  double kPTranslation = 5;
-    public static  double kITranslation = 0;
-    public static  double kDTranslation = 0;
+    public static  double kPTranslation = 3.0;
+    public static  double kITranslation = 0.1;
+    public static  double kDTranslation = 2;
 
-    public static final double kPTheta = 5;
-    public static final double kITheta = 0;
+    public static final double kPTheta = 4.5;
+    public static final double kITheta = 0.1;
     public static final double kDTheta = 0;
 
 

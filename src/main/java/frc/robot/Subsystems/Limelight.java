@@ -25,7 +25,7 @@ public Swerve s_swerve;
 public NetworkTable networkTables;
 public IntegerSubscriber pipeline;
 public IntegerPublisher pipelinePublisher;
-public double xAng, yAng, ySpeed, xSpeed, turningSpeed, targetID, targetArea, correctionX, correctionZ, correctionT, distanceX, distanceY, yAngToRadians, xAngToRadians;
+public double xAng_Coral, yAng_Coral, ySpeed, xSpeed, turningSpeed, targetID_Coral, targetArea_Coral, correctionX, correctionZ, correctionT, distanceX, distanceY, yAngToRadians_Coral, xAngToRadians_Coral;
 public double[] localizedPose;
 public double[] botPose_targetSpace, targetPose_robotSpace;
 public ProfiledPIDController thetaPIDController;
@@ -33,7 +33,8 @@ public ProfiledPIDController xPIDController, yPIDController;
 public boolean autoDriveToggle;
 public boolean hasTargets;
 public BooleanSupplier interrupted;
-public String limelightName = "limelight";
+public String limelight_Coral = "limelight-coral";
+public String limelight_Tags = "liemlight-tags";
 
 public LimelightResults r_limelight;
 
@@ -59,7 +60,7 @@ public LimelightHelpers.PoseEstimate mt2;
 
     public Optional<Pose2d> getPoseFromAprilTags() {
         double[] botpose = localizedPose;
-        if(botpose.length < 7 || targetID == -1) return Optional.empty();
+        if(botpose.length < 7 || targetID_Coral == -1) return Optional.empty();
         return Optional.of(new Pose2d(botpose[0], botpose[1], new Rotation2d(botpose[5])));
     }
   
@@ -104,7 +105,7 @@ public LimelightHelpers.PoseEstimate mt2;
     
     public void updateDriveValues()
     {
-        turningSpeed = thetaPIDController.calculate(xAngToRadians); /*Rads / sec */
+        turningSpeed = thetaPIDController.calculate(xAngToRadians_Coral); /*Rads / sec */
         ySpeed = -1 * yPIDController.calculate(distanceY); /*m/sec */
     }
     public void resetDriveValues()
@@ -145,9 +146,8 @@ public LimelightHelpers.PoseEstimate mt2;
         public void execute()
         {
             updateDriveValues();
-
+            autoDriveToggle = true;
             s_swerve.setModuleStates(new ChassisSpeeds(ySpeed, 0, turningSpeed));
-            // System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOO");
         }
 
         @Override
@@ -160,7 +160,6 @@ public LimelightHelpers.PoseEstimate mt2;
         public void end(boolean interrupted)
         {
             autoDriveToggle = false;
-            System.out.println("AHHHHHHHHHHHHHHH");
         }
     };
 
@@ -171,20 +170,22 @@ public LimelightHelpers.PoseEstimate mt2;
         
         
         
-        // botPose_targetSpace = LimelightHelpers.getBotPose_TargetSpace(limelightName);
-        // targetPose_robotSpace = LimelightHelpers.getTargetPose_RobotSpace(limelightName);
-        // localizedPose = LimelightHelpers.getBotPose_wpiBlue(limelightName);
-        xAng = LimelightHelpers.getTX(limelightName);
-        xAngToRadians = Math.toRadians(xAng);
-        yAng = LimelightHelpers.getTY(limelightName);
-        yAngToRadians = Math.toRadians(yAng);
-        hasTargets = LimelightHelpers.getTV(limelightName);
-        // targetID = LimelightHelpers.getFiducialID(limelightName);
-        // targetArea = LimelightHelpers.getTA(limelightName);
+        // botPose_targetSpace = LimelightHelpers.getBotPose_TargetSpace(limelight_Coral);
+        // targetPose_robotSpace = LimelightHelpers.getTargetPose_RobotSpace(limelight_Coral);
+        // localizedPose = LimelightHelpers.getBotPose_wpiBlue(limelight_Coral);
+        xAng_Coral = LimelightHelpers.getTX(limelight_Coral);
+        xAngToRadians_Coral = Math.toRadians(xAng_Coral);
+        yAng_Coral = LimelightHelpers.getTY(limelight_Coral);
+        yAngToRadians_Coral = Math.toRadians(yAng_Coral);
+        hasTargets = LimelightHelpers.getTV(limelight_Coral);
+        // targetID = LimelightHelpers.getFiducialID(limelight_Coral);
+        // targetArea = LimelightHelpers.getTA(limelight_Coral);
         
-        distanceY = (((24 - constants_Limelight.limelightHeight) / (Math.tan(Math.toRadians(yAng+constants_Limelight.limelightAngle)))) + constants_Limelight.limelightDistanceForward) * 0.0254; //meters from target to center of robot
-        distanceX = (Math.cos(Math.toRadians(distanceY/xAng))) * 0.0254;//meters to center of robot
+        distanceY = (((13 - constants_Limelight.Height_Coral) / (Math.tan(Math.toRadians(yAng_Coral+constants_Limelight.Angle_Coral)))) + constants_Limelight.DistanceForward_Coral) * 0.0254; //meters from target to center of robot
+        distanceX = (Math.cos(Math.toRadians(distanceY/xAng_Coral))) * 0.0254;//meters to center of robot
         
+        updateDriveValues();
+
         // xSpeed = -1 * xPIDController.calculate(correctionX); //m/sec
 
 
@@ -198,8 +199,8 @@ public LimelightHelpers.PoseEstimate mt2;
         // SmartDashboard.putNumber("X Speed", xSpeed);
         SmartDashboard.putBoolean("Has Targets", hasTargets);
         SmartDashboard.putNumber("Y Speed", ySpeed);
-        SmartDashboard.putNumber("TX Value", xAng);
-        SmartDashboard.putNumber("TY Value", yAng);
+        SmartDashboard.putNumber("TX Value", xAng_Coral);
+        SmartDashboard.putNumber("TY Value", yAng_Coral);
 
         SmartDashboard.putBoolean("autoDrive", autoDriveToggle);
 
