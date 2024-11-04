@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.constants_OI;
 import frc.robot.Constants.constants_Drive;
 import frc.robot.Subsystems.Limelight;
@@ -18,6 +19,7 @@ public class Drive extends Command{
     
     private final Swerve s_Swerve;
     private final Limelight s_limelight;
+    private final Robot robot;
     public final CommandXboxController opController;
     // public final CommandJoystick leftStick;
     // public final CommandJoystick rightStick;
@@ -32,10 +34,11 @@ public class Drive extends Command{
 
 
     // public DriveCommand(s_Swerve s_Swerve, CommandXboxController opController, CommandJoystick leftStick, CommandJoystick rightStick) {
-        public Drive(Swerve s_Swerve, CommandXboxController opController, Limelight s_limelight) {
+        public Drive(Swerve s_Swerve, CommandXboxController opController, Limelight s_limelight, Robot robot) {
 
                 this.s_Swerve = s_Swerve;
                 this.s_limelight = s_limelight;
+                this.robot = robot;
                 this.xLimiter = new SlewRateLimiter(constants_Drive.kTeleDriveMaxAccelerationUnitsPerSecond);
                 this.yLimiter = new SlewRateLimiter(constants_Drive.kTeleDriveMaxAccelerationUnitsPerSecond);
                 this.turningLimiter = new SlewRateLimiter(constants_Drive.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
@@ -78,13 +81,15 @@ public class Drive extends Command{
         ySpeed = yLimiter.calculate(ySpeed) * constants_Drive.kTeleDriveMaxSpeedMetersPerSecond;
         turningSpeed = turningLimiter.calculate(turningSpeed) * constants_Drive.kTeleDriveMaxAngularSpeedRadiansPerSecond;
 
+        
+        drive();
+    }
+    
+    public void drive()
+    {
         ChassisSpeeds chassisSpeeds;
         
-        
-        if(s_limelight.autoDriveToggle && s_limelight.hasTargets)
-        {
-                chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(s_limelight.ySpeed, xSpeed, s_limelight.turningSpeed, s_Swerve.geRotation2d());
-        }else
+        if(!robot.isAutonomous())
         {
             if(fieldOriented)
             {
@@ -93,8 +98,10 @@ public class Drive extends Command{
             {
                 chassisSpeeds = new ChassisSpeeds(ySpeed, xSpeed, turningSpeed);
             }
+            s_Swerve.setModuleStates(chassisSpeeds);        
         }
-        s_Swerve.setModuleStates(chassisSpeeds);
+        
+
     }
 
 

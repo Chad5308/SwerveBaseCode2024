@@ -4,6 +4,7 @@ import java.util.Optional;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
@@ -29,7 +30,7 @@ public double[] localizedPose;
 public double[] botPose_targetSpace, targetPose_robotSpace;
 public ProfiledPIDController thetaPIDController;
 public ProfiledPIDController xPIDController, yPIDController;
-public boolean autoDriveToggle = false;
+public boolean autoDriveToggle;
 public boolean hasTargets;
 public BooleanSupplier interrupted;
 public String limelightName = "limelight";
@@ -138,15 +139,15 @@ public LimelightHelpers.PoseEstimate mt2;
         public void initialize()
         {
             s_swerve.faceAllFoward();
-            autoDriveToggle = true;
         }
-
+        
         @Override
         public void execute()
         {
             updateDriveValues();
 
-            System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOO");
+            s_swerve.setModuleStates(new ChassisSpeeds(ySpeed, 0, turningSpeed));
+            // System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOO");
         }
 
         @Override
@@ -195,7 +196,8 @@ public LimelightHelpers.PoseEstimate mt2;
         SmartDashboard.putNumber("Turning Speed", turningSpeed);
         // SmartDashboard.putNumber("TA Value", targetArea);
         // SmartDashboard.putNumber("X Speed", xSpeed);
-        // SmartDashboard.putNumber("Y Speed", ySpeed);
+        SmartDashboard.putBoolean("Has Targets", hasTargets);
+        SmartDashboard.putNumber("Y Speed", ySpeed);
         SmartDashboard.putNumber("TX Value", xAng);
         SmartDashboard.putNumber("TY Value", yAng);
 

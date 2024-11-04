@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Commands.Auto;
 import frc.robot.Commands.Drive;
@@ -37,7 +38,7 @@ public class RobotContainer {
   public Swerve s_Swerve = new Swerve();
   public LimelightHelpers h_Limelight = new LimelightHelpers();
   public Limelight s_Limelight = new Limelight(s_Swerve);
-  public Drive c_Drive = new Drive(s_Swerve, opController, s_Limelight);
+  public Drive c_Drive = new Drive(s_Swerve, opController, s_Limelight, robot);
   public Auto c_Auto = new Auto(c_Drive, s_Swerve, s_Limelight);
 
   private SendableChooser<Command> autoChooser;
@@ -56,7 +57,12 @@ public class RobotContainer {
 
   public void configureAuto()
   {
-    autoChooser.addOption("AutoDrive", new PathPlannerAuto("AutoDrive"));
+    autoChooser.addOption("AutoDrive", limelightTestAuto());
+  }
+
+  public SequentialCommandGroup limelightTestAuto()
+  {
+    return new SequentialCommandGroup(new PathPlannerAuto("Start Auto").andThen(s_Limelight.autoDrive).andThen(new PathPlannerAuto("Return Auto")));
   }
 
 

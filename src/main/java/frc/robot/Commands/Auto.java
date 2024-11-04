@@ -2,6 +2,8 @@ package frc.robot.Commands;
 
 
 
+// import java.util.Map;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 // import com.pathplanner.lib.config.ModuleConfig;
@@ -30,7 +32,7 @@ public Swerve s_Swerve;
 public Limelight s_Limelight;
 public PIDController translationConstants = new PIDController(constants_Auto.kPTranslation, constants_Auto.kITranslation, constants_Auto.kDTranslation);
 public PIDController rotationConstants = new PIDController(constants_Auto.kPTheta, constants_Auto.kITheta, constants_Auto.kDTheta);
-// public Map map
+// public Map map;
 
 
     public Auto(Drive c_Drive, Swerve s_Swerve, Limelight s_Limelight){
@@ -51,11 +53,7 @@ public PIDController rotationConstants = new PIDController(constants_Auto.kPThet
                 );
 
         NamedCommands.registerCommand("FaceForward Wheels", Commands.runOnce(() -> s_Swerve.faceAllFoward()));
-        NamedCommands.registerCommand("AutoDrive", Commands.runOnce(() -> s_Limelight.autoDrive.schedule()));
-        // NamedCommands.registerCommand("AutoRunCheck", s_Limelight.autoDriveCheck());
 
-        NamedCommands.registerCommand("AutoDrive Complete", Commands.runOnce(() -> System.out.println("AutoDrive Complete")));
-        NamedCommands.registerCommand("AutoDrive Active", Commands.runOnce(() -> System.out.println("AutoDrive Active")));
     }
     
     public HolonomicPathFollowerConfig autoConfig = new HolonomicPathFollowerConfig(
