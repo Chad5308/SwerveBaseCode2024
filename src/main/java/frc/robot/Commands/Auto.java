@@ -60,7 +60,7 @@ public PIDController rotationConstants = new PIDController(constants_Auto.kPThet
         new PIDConstants(translationConstants.getP(), translationConstants.getI(), translationConstants.getD()),
         new PIDConstants(rotationConstants.getP(), rotationConstants.getI(), rotationConstants.getD()), 
         constants_Drive.kTeleDriveMaxSpeedMetersPerSecond, 
-        constants_Module.moduleRadius, 
+        constants_Module.moduleRadius.magnitude(), 
         new ReplanningConfig());
 
 

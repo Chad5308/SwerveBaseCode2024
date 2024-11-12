@@ -25,13 +25,12 @@ public Swerve s_swerve;
 public NetworkTable networkTables;
 public IntegerSubscriber pipeline;
 public IntegerPublisher pipelinePublisher;
-public double xAng_Coral, yAng_Coral, ySpeed, xSpeed, turningSpeed, targetID_Coral, targetArea_Coral, correctionX, correctionZ, correctionT, distanceX, distanceY, yAngToRadians_Coral, xAngToRadians_Coral;
+public double xAng_Coral, yAng_Coral, ySpeed, xSpeed, turningSpeed, targetID_Coral, targetArea_Coral, correctionX, correctionZ, correctionT, distanceX, distanceY, yAngToRadians_Coral, xAngToRadians_Coral, height_Target;
 public double[] localizedPose;
 public double[] botPose_targetSpace, targetPose_robotSpace;
 public ProfiledPIDController thetaPIDController;
-public ProfiledPIDController xPIDController, yPIDController;
-public boolean autoDriveToggle;
-public boolean hasTargets;
+public ProfiledPIDController yPIDController;
+public boolean autoDriveToggle, hasTargets_Coral, hasTargets_Tags;
 public BooleanSupplier interrupted;
 public String limelight_Coral = "limelight-coral";
 public String limelight_Tags = "liemlight-tags";
@@ -49,13 +48,12 @@ public LimelightHelpers.PoseEstimate mt2;
         this.s_swerve = s_swerve;
         networkTables = NetworkTableInstance.getDefault().getTable("limelight");
         pipelinePublisher = networkTables.getIntegerTopic("limelight.getpipeline").publish();
+        LimelightHelpers.setPipelineIndex(limelight_Coral, 1);
         
         
         thetaPIDController = new ProfiledPIDController(constants_Limelight.thetakP, constants_Limelight.thetakI, constants_Limelight.thetakD, constants_Auto.kThetaControllerConstraints);
-        xPIDController = new ProfiledPIDController(constants_Limelight.linearkP, constants_Limelight.linearkI, constants_Limelight.linearkD, constants_Auto.kLinearConstraints);
         yPIDController = new ProfiledPIDController(constants_Limelight.linearkP, constants_Limelight.linearkI, constants_Limelight.linearkD, constants_Auto.kLinearConstraints);
         setPIDControllers();
-
     }
 
     public Optional<Pose2d> getPoseFromAprilTags() {
@@ -67,39 +65,23 @@ public LimelightHelpers.PoseEstimate mt2;
 
     public void setPIDControllers()
     {
+        // if(LimelightHelpers.getCurrentPipelineType(limelight_Coral) != "Neural Detector")
+        // {
+        //     thetaPIDController.setGoal(0);//radian
+        //     thetaPIDController.setTolerance(Math.toRadians(1)); //radians
+    
+        //     yPIDController.setGoal(1);//meters
+        //     yPIDController.setTolerance(0.05);//meters
+        // }else
+        // {
+        // }
         thetaPIDController.setGoal(0);//radians
-        thetaPIDController.setTolerance(Math.toRadians(0.5)); //radians
+        thetaPIDController.setTolerance(Math.toRadians(1)); //radians
+    
+        yPIDController.setGoal(0.7);//meters
+        yPIDController.setTolerance(0.05);//meters
 
-        xPIDController.setGoal(0);//meters
-        xPIDController.setTolerance(0.1);//meters
-
-        yPIDController.setGoal(1);//meters
-        yPIDController.setTolerance(0.0381);//meters
     }
-
-    // public Command autoDrive = new Command() 
-    // {
-
-        
-    //     @Override
-    //     public void execute()
-    //     {
-    //         updateDriveValues();
-    //     }
-
-    //     @Override
-    //     public boolean isFinished()
-    //     {
-    //         return atGoal();
-    //     }
-
-    //     @Override
-    //     public void end(boolean interrupted)
-    //     {
-    //         resetDriveValues();
-    //     }
-    // };
-
 
     
     
@@ -119,19 +101,6 @@ public LimelightHelpers.PoseEstimate mt2;
         return yPIDController.atGoal() && thetaPIDController.atGoal();
     }
 
-
-    // public Command autoDriveToggle()
-    // {
-    //     return Commands.runOnce(()->
-    //     {
-    //         autoDriveToggle = !autoDriveToggle;
-    //     });
-    // }
-
-    // public Command autoDriveCheck()
-    // {
-    //     return Commands.waitUntil(this::atGoal);
-    // }
 
     public Command autoDrive = new Command() {
         
@@ -153,7 +122,7 @@ public LimelightHelpers.PoseEstimate mt2;
         @Override
         public boolean isFinished()
         {
-            return atGoal();
+            return atGoal() || !hasTargets_Coral;
         }
 
         @Override
@@ -163,6 +132,25 @@ public LimelightHelpers.PoseEstimate mt2;
         }
     };
 
+    public Command coral_apriltags()
+    {
+        return runOnce(()->
+        {
+            LimelightHelpers.setPipelineIndex(limelight_Coral, 0);
+            setPIDControllers();
+            height_Target = 13;
+        });
+    }
+
+    public Command coral_NeuralDetector()
+    {
+        return runOnce(()->
+        {
+            LimelightHelpers.setPipelineIndex(limelight_Coral, 1);
+            setPIDControllers();
+            height_Target = 1;
+        });
+    }
 
 
     @Override
@@ -173,16 +161,17 @@ public LimelightHelpers.PoseEstimate mt2;
         // botPose_targetSpace = LimelightHelpers.getBotPose_TargetSpace(limelight_Coral);
         // targetPose_robotSpace = LimelightHelpers.getTargetPose_RobotSpace(limelight_Coral);
         // localizedPose = LimelightHelpers.getBotPose_wpiBlue(limelight_Coral);
+
         xAng_Coral = LimelightHelpers.getTX(limelight_Coral);
         xAngToRadians_Coral = Math.toRadians(xAng_Coral);
         yAng_Coral = LimelightHelpers.getTY(limelight_Coral);
         yAngToRadians_Coral = Math.toRadians(yAng_Coral);
-        hasTargets = LimelightHelpers.getTV(limelight_Coral);
+        hasTargets_Coral = LimelightHelpers.getTV(limelight_Coral);
         // targetID = LimelightHelpers.getFiducialID(limelight_Coral);
         // targetArea = LimelightHelpers.getTA(limelight_Coral);
         
-        distanceY = (((13 - constants_Limelight.Height_Coral) / (Math.tan(Math.toRadians(yAng_Coral+constants_Limelight.Angle_Coral)))) + constants_Limelight.DistanceForward_Coral) * 0.0254; //meters from target to center of robot
-        distanceX = (Math.cos(Math.toRadians(distanceY/xAng_Coral))) * 0.0254;//meters to center of robot
+        distanceY = (((height_Target - constants_Limelight.Height_Coral.magnitude()) / (Math.tan(Math.toRadians(yAng_Coral+constants_Limelight.Angle_Coral.magnitude())))) + constants_Limelight.DistanceForward_Coral.magnitude()); //meters from target to center of robot
+        // distanceX = (Math.cos(Math.toRadians(distanceY/xAng_Coral))) * 0.0254;//meters to center of robot
         
         updateDriveValues();
 
@@ -197,7 +186,7 @@ public LimelightHelpers.PoseEstimate mt2;
         SmartDashboard.putNumber("Turning Speed", turningSpeed);
         // SmartDashboard.putNumber("TA Value", targetArea);
         // SmartDashboard.putNumber("X Speed", xSpeed);
-        SmartDashboard.putBoolean("Has Targets", hasTargets);
+        SmartDashboard.putBoolean("Has Targets", hasTargets_Coral);
         SmartDashboard.putNumber("Y Speed", ySpeed);
         SmartDashboard.putNumber("TX Value", xAng_Coral);
         SmartDashboard.putNumber("TY Value", yAng_Coral);

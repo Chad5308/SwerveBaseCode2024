@@ -9,7 +9,9 @@ import java.util.HashMap;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
+// import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,15 +33,15 @@ public final class Constants {
     // public static final double wheelRadius = Units.inchesToMeters(1.5);
     public static final double COF = 1.2;
     //TODO Input trackWidth and WheelBase measurements
-    public static final double kTrackWidth = Units.inchesToMeters(23.75);
+    public static final Measure<Distance> kTrackWidth = Units.Meters.of(0.60325);
       // Distance between right and left wheels
-    public static final double kWheelBase = Units.inchesToMeters(23.75);
+    public static final Measure<Distance> kWheelBase = Units.Meters.of(0.60325);
       // Distance between front and back wheels
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-      new Translation2d(kWheelBase / 2, -kTrackWidth / 2), //front left
-        new Translation2d(kWheelBase / 2, kTrackWidth / 2), //front right
-        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2), //back left
-        new Translation2d(-kWheelBase / 2, kTrackWidth / 2)); //back right
+      new Translation2d(kWheelBase.magnitude() / 2, -kTrackWidth.magnitude() / 2), //front left
+        new Translation2d(kWheelBase.magnitude() / 2, kTrackWidth.magnitude() / 2), //front right
+        new Translation2d(-kWheelBase.magnitude() / 2, -kTrackWidth.magnitude() / 2), //back left
+        new Translation2d(-kWheelBase.magnitude() / 2, kTrackWidth.magnitude() / 2)); //back right
 
 
     //TODO Configure all motor controller CAN Bus ports
@@ -62,10 +64,10 @@ public final class Constants {
     
 
     //TODO Test and input all module offsets
-    public static final double kFLDegrees = 131.396484375;
-    public static final double kFRDegrees = -111.4453125;
-    public static final double kBLDegrees = 152.2265625;
-    public static final double kBRDegrees = 4.5703125;
+    public static final Measure<Angle> kFLDegrees = Units.Degrees.of(131.396484375);
+    public static final Measure<Angle> kFRDegrees = Units.Degrees.of(-111.4453125);
+    public static final Measure<Angle> kBLDegrees = Units.Degrees.of(152.2265625);
+    public static final Measure<Angle> kBRDegrees = Units.Degrees.of(4.5703125);
 
 
     //TODO Invert any motor to match controller output
@@ -85,7 +87,7 @@ public final class Constants {
     public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
     public static final double kPhysicalMaxSpeedMetersPerSecond = 4.60248; //6.949 for Swerve X, 4.60248 for sd
-    public static final double kPhysicalMaxAngularSpeedRadiansPerSecond =kPhysicalMaxSpeedMetersPerSecond/(kTrackWidth/2);
+    public static final double kPhysicalMaxAngularSpeedRadiansPerSecond =kPhysicalMaxSpeedMetersPerSecond/(kTrackWidth.magnitude()/2);
 
     //For limiting speed while driving
     public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 1.0;
@@ -95,7 +97,7 @@ public final class Constants {
   }
   
   public static final class constants_Module {
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
+    public static final Measure<Distance> kWheelDiameterMeters = Units.Meters.of(0.1016);
     public static final double kDriveMotorGearRatio = 4.59 / 1; //4.59 for Swerve X, 6.75 for sds
     public static final double kTurningMotorGearRatio = 13.3714 / 1; //13.3714 for Swerve X, 12.8 for sds
     public static final double kDriveEncoderRot2Meter = 1/16.0344; //Not sure try 1/16.0344, 1/23.58 for sds
@@ -108,7 +110,7 @@ public final class Constants {
     public static final double kITurning = 0.0;
     public static final double kDTurning = 0.75;
 
-    public static final double moduleRadius = Units.inchesToMeters(constants_Drive.kTrackWidth/2); //measured from center of robot to furthest module.
+    public static final Measure<Distance> moduleRadius = Units.Meters.of(constants_Drive.kTrackWidth.magnitude()/2); //measured from center of robot to furthest module.
   }
 
   public static final class constants_OI {
@@ -121,7 +123,7 @@ public final class Constants {
 
   
   public static final class constants_AprilTags{ //[id num, height in inches, coordinate x, coordinate y, heading]
-    public static final double[] blueSourceRight = {1, 53.375};
+    public static final double[] blueSourceRight = {1, 53.375, 15.08, 0.25, };
     public static final double[] blueSourceLeft = {2, 53.375};
     public static final double[] redSpeakerRight = {3, 57.125};
     public static final double[] redSpeakerLeft = {4, 57.125};
@@ -148,15 +150,15 @@ public final class Constants {
     public static final double linearkI = 0.001;
     public static final double linearkD = 0.05;
 
-    public static final double Angle_Coral = -15;
-    public static final double DistanceForward_Coral = 5; //inches
-    public static final double DistanceRight_Coral = -3; //inches
-    public static final double Height_Coral = 23.75; //inches
+    public static final Measure<Angle> Angle_Coral = Units.Degrees.of(-30);
+    public static final Measure<Distance> DistanceForward_Coral = Units.Meters.of(0.127);
+    public static final Measure<Distance> DistanceRight_Coral = Units.Meters.of(-0.0762);
+    public static final Measure<Distance> Height_Coral = Units.Meters.of(0.60325);
 
-    public static final double Angle_Tags = 15;
-    public static final double DistanceForward_Tags = 3; //inches
-    public static final double DistanceRight_Tags = -3; //inches
-    public static final double Height_Tags = 24.5; //inches
+    public static final Measure<Angle> Angle_Tags = Units.Degrees.of(30);
+    public static final Measure<Distance> DistanceForward_Tags = Units.Meters.of(0.0762);
+    public static final Measure<Distance> DistanceRight_Tags = Units.Meters.of(-0.0762);
+    public static final Measure<Distance> Height_Tags = Units.Meters.of(0.6223);
   }
 
 

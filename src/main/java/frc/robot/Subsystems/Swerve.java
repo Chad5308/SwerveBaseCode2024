@@ -29,10 +29,10 @@ public class Swerve extends SubsystemBase{
     Optional<Alliance> alliance;
   
     
-    public static Module frontLeftModule = new Module(constants_Drive.kFrontLeftTurningMotorPort, constants_Drive.kFrontLeftDriveMotorPort, constants_Drive.kFrontLeftDriveEncoderReversed, constants_Drive.kFrontLeftTurningEncoderReversed, constants_Drive.kFrontLeftDriveAbsoluteEncoderPort, constants_Drive.kBLDegrees, constants_Drive.kFrontLeftDriveAbsoluteEncoderReversed);
-    public static Module frontRightModule = new Module(constants_Drive.kFrontRightTurningMotorPort, constants_Drive.kFrontRightDriveMotorPort, constants_Drive.kFrontRightDriveEncoderReversed, constants_Drive.kFrontRightTurningEncoderReversed, constants_Drive.kFrontRightDriveAbsoluteEncoderPort, constants_Drive.kBRDegrees, constants_Drive.kFrontRightDriveAbsoluteEncoderReversed);
-    public static Module backLeftModule = new Module(constants_Drive.kBackLeftTurningMotorPort, constants_Drive.kBackLeftDriveMotorPort, constants_Drive.kBackLeftDriveEncoderReversed, constants_Drive.kBackLeftTurningEncoderReversed, constants_Drive.kBackLeftDriveAbsoluteEncoderPort, constants_Drive.kFLDegrees, constants_Drive.kBackLeftTurningEncoderReversed);
-    public static Module backRightModule = new Module(constants_Drive.kBackRightTurningMotorPort, constants_Drive.kBackRightDriveMotorPort, constants_Drive.kBackRightDriveEncoderReversed, constants_Drive.kBackRightTurningEncoderReversed, constants_Drive.kBackRightDriveAbsoluteEncoderPort, constants_Drive.kFRDegrees, constants_Drive.kBackRightTurningEncoderReversed);
+    public static Module frontLeftModule = new Module(constants_Drive.kFrontLeftTurningMotorPort, constants_Drive.kFrontLeftDriveMotorPort, constants_Drive.kFrontLeftDriveEncoderReversed, constants_Drive.kFrontLeftTurningEncoderReversed, constants_Drive.kFrontLeftDriveAbsoluteEncoderPort, constants_Drive.kBLDegrees.magnitude(), constants_Drive.kFrontLeftDriveAbsoluteEncoderReversed);
+    public static Module frontRightModule = new Module(constants_Drive.kFrontRightTurningMotorPort, constants_Drive.kFrontRightDriveMotorPort, constants_Drive.kFrontRightDriveEncoderReversed, constants_Drive.kFrontRightTurningEncoderReversed, constants_Drive.kFrontRightDriveAbsoluteEncoderPort, constants_Drive.kBRDegrees.magnitude(), constants_Drive.kFrontRightDriveAbsoluteEncoderReversed);
+    public static Module backLeftModule = new Module(constants_Drive.kBackLeftTurningMotorPort, constants_Drive.kBackLeftDriveMotorPort, constants_Drive.kBackLeftDriveEncoderReversed, constants_Drive.kBackLeftTurningEncoderReversed, constants_Drive.kBackLeftDriveAbsoluteEncoderPort, constants_Drive.kFLDegrees.magnitude(), constants_Drive.kBackLeftTurningEncoderReversed);
+    public static Module backRightModule = new Module(constants_Drive.kBackRightTurningMotorPort, constants_Drive.kBackRightDriveMotorPort, constants_Drive.kBackRightDriveEncoderReversed, constants_Drive.kBackRightTurningEncoderReversed, constants_Drive.kBackRightDriveAbsoluteEncoderPort, constants_Drive.kFRDegrees.magnitude(), constants_Drive.kBackRightTurningEncoderReversed);
     
 
     public Swerve() {
@@ -134,19 +134,19 @@ public class Swerve extends SubsystemBase{
     
     //face forward method. Called once the bot is enabled
     public void faceAllFoward() {
-        backRightModule.wheelFaceForward(constants_Drive.kBRDegrees);
-        frontLeftModule.wheelFaceForward(constants_Drive.kFLDegrees);
-        frontRightModule.wheelFaceForward(constants_Drive.kFRDegrees);
-        backLeftModule.wheelFaceForward(constants_Drive.kBLDegrees);
+        backRightModule.wheelFaceForward(constants_Drive.kBRDegrees.magnitude());
+        frontLeftModule.wheelFaceForward(constants_Drive.kFLDegrees.magnitude());
+        frontRightModule.wheelFaceForward(constants_Drive.kFRDegrees.magnitude());
+        backLeftModule.wheelFaceForward(constants_Drive.kBLDegrees.magnitude());
         System.out.println("exacuted faceAll");
     }
     
     public Command resetWheels(){
         return runOnce(() -> {
-                frontLeftModule.wheelFaceForward(constants_Drive.kFLDegrees);
-                frontRightModule.wheelFaceForward(constants_Drive.kFRDegrees);
-                backLeftModule.wheelFaceForward(constants_Drive.kBLDegrees);
-                backRightModule.wheelFaceForward(constants_Drive.kBRDegrees);
+                frontLeftModule.wheelFaceForward(constants_Drive.kFLDegrees.magnitude());
+                frontRightModule.wheelFaceForward(constants_Drive.kFRDegrees.magnitude());
+                backLeftModule.wheelFaceForward(constants_Drive.kBLDegrees.magnitude());
+                backRightModule.wheelFaceForward(constants_Drive.kBRDegrees.magnitude());
     });}
         
     public Command fieldOrientedToggle(){

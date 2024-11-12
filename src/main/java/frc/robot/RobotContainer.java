@@ -42,17 +42,21 @@ public class RobotContainer {
   public Auto c_Auto = new Auto(c_Drive, s_Swerve, s_Limelight);
 
   private SendableChooser<Command> autoChooser;
+  private SendableChooser<Command> pipeLineChooser;
 
 
  
   public RobotContainer() 
   {
     autoChooser = AutoBuilder.buildAutoChooser();
+    pipeLineChooser = new SendableChooser<>();
     s_Swerve.setDefaultCommand(c_Drive);
     configureBindings();
     configureAuto();
+    configurePipeLine();
 
     SmartDashboard.putData("Auto Chooser", autoChooser);   
+    SmartDashboard.putData("Pipeline Chooser", pipeLineChooser);
   }
 
   public void configureAuto()
@@ -60,9 +64,15 @@ public class RobotContainer {
     autoChooser.addOption("AutoDrive", limelightTestAuto());
   }
 
+  public void configurePipeLine()
+  {
+    pipeLineChooser.addOption("AprilTags", s_Limelight.coral_apriltags());
+    pipeLineChooser.addOption("Neural Detector", s_Limelight.coral_NeuralDetector());
+  }
+
   public SequentialCommandGroup limelightTestAuto()
   {
-    return new SequentialCommandGroup(new PathPlannerAuto("Start Auto").andThen(s_Limelight.autoDrive).andThen(new PathPlannerAuto("Return Auto")));
+    return new SequentialCommandGroup(new PathPlannerAuto("Start Auto"));//.andThen(s_Limelight.autoDrive).andThen(new PathPlannerAuto("Return Auto")));
   }
 
 
@@ -77,5 +87,6 @@ public class RobotContainer {
     opController.povRight().toggleOnTrue(Commands.runOnce(() -> s_Swerve.zeroHeading()));
     opController.povLeft().toggleOnTrue(s_Swerve.fieldOrientedToggle());
     opController.button(7).onTrue(s_Swerve.resetWheels()); //window looking button
+    opController.a().onTrue(s_Limelight.autoDrive);
   }
 }
