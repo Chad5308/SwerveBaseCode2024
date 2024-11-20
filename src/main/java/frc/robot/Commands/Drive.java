@@ -88,18 +88,17 @@ public class Drive extends Command{
     public void drive()
     {
         ChassisSpeeds chassisSpeeds;
+            // if(fieldOriented)
+            // {
+            //     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, turningSpeed, s_Swerve.geRotation2d());
+            // }else
+            // {
+            //     chassisSpeeds = new ChassisSpeeds(ySpeed, xSpeed, turningSpeed);
+            // }
+            
+        chassisSpeeds = fieldOriented == true ? ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, turningSpeed, s_Swerve.geRotation2d()) : new ChassisSpeeds(ySpeed, xSpeed, turningSpeed);
+        s_Swerve.setModuleStates(chassisSpeeds);        
         
-        if(!robot.isAutonomous())
-        {
-            if(fieldOriented)
-            {
-                chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, turningSpeed, s_Swerve.geRotation2d());
-            }else
-            {
-                chassisSpeeds = new ChassisSpeeds(ySpeed, xSpeed, turningSpeed);
-            }
-            s_Swerve.setModuleStates(chassisSpeeds);        
-        }
         
 
     }
